@@ -3,8 +3,12 @@
 ##
 ## Get latest from `dotnet new gitignore`
 
-# dotenv files
+# Secrets: API keys live in the ANTHROPIC_API_KEY env var or dotnet user-secrets, never in the repo.
 .env
+.env.*
+secrets.json
+appsettings.*.local.json
+*.local.json
 
 # User-specific files
 *.rsuser
