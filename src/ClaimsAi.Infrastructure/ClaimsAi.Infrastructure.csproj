@@ -7,6 +7,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <InternalsVisibleTo Include="ClaimsAi.UnitTests" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\ClaimsAi.Core\ClaimsAi.Core.csproj" />
   </ItemGroup>
 

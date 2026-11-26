@@ -25,7 +25,7 @@ public class LiveExtractionEval(ITestOutputHelper output)
         var cases = EvalCase.LoadFile(EvalPaths.EvalSet);
         var extractor = new ClaudeClaimExtractor(
             new AnthropicClient(),
-            new ClaudeExtractorOptions { Model = Model, Effort = Effort });
+            new ClaudeOptions { Model = Model, Effort = Effort });
 
         var report = await EvalRunner.RunAsync(
             cases, extractor, Model, Effort.ToString().ToLowerInvariant(), ModelPricing.ClaudeOpus55);

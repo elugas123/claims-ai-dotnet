@@ -1,24 +1,14 @@
-using System.Diagnostics;
 using Anthropic;
 using Anthropic.Models.Messages;
 using ClaimsAi.Core;
 
 namespace ClaimsAi.Infrastructure.Claude;
 
-public sealed record ClaudeExtractorOptions
-{
-    public string Model { get; init; } = "claude-opus-5-5";
-
-    /// <summary>Extraction is a simple task, so low effort keeps cost and latency down. Raise it if evals show errors.</summary>
-    public Effort Effort { get; init; } = Effort.Low;
-
-    public int MaxTokens { get; init; } = 4096;
-}
-
 /// <summary>Extracts structured claim data with a single Claude call constrained by a JSON Schema.</summary>
-public sealed class ClaudeClaimExtractor(AnthropicClient client, ClaudeExtractorOptions? options = null) : IClaimExtractor
+public sealed class ClaudeClaimExtractor(AnthropicClient client, ClaudeOptions? options = null) : IClaimExtractor
 {
-    private readonly ClaudeExtractorOptions _options = options ?? new();
+    // Extraction is a simple task, so low effort keeps cost and latency down. Raise it if evals show errors.
+    private readonly ClaudeOptions _options = options ?? new() { Effort = Effort.Low };
 
     internal const string SystemPrompt = """
         You are a claims intake assistant for Contoso Insurance, a fictional insurer.
@@ -42,41 +32,11 @@ public sealed class ClaudeClaimExtractor(AnthropicClient client, ClaudeExtractor
 
     public async Task<ExtractionResult> ExtractAsync(ClaimSubmission submission, CancellationToken cancellationToken = default)
     {
-        var stopwatch = Stopwatch.StartNew();
+        var userMessage = $"Received date: {submission.ReceivedAt:yyyy-MM-dd}\n\n<claim_report>\n{submission.Text}\n</claim_report>";
 
-        var response = await client.Messages.Create(new MessageCreateParams
-        {
-            Model = _options.Model,
-            MaxTokens = _options.MaxTokens,
-            System = SystemPrompt,
-            OutputConfig = new OutputConfig
-            {
-                Effort = _options.Effort,
-                Format = new JsonOutputFormat { Schema = ClaimExtractionJson.Schema },
-            },
-            Messages =
-            [
-                new UserMessageParam
-                {
-                    Content = $"Received date: {submission.ReceivedAt:yyyy-MM-dd}\n\n<claim_report>\n{submission.Text}\n</claim_report>",
-                },
-            ],
-        }, cancellationToken);
+        var result = await ClaudeStructuredOutput.CreateAsync<ClaimExtraction>(
+            client, _options, SystemPrompt, userMessage, ClaimsJson.ExtractionSchema, cancellationToken);
 
-        stopwatch.Stop();
-
-        if (response.StopReason == "refusal")
-        {
-            throw new ClaimExtractionException($"The model declined to process this claim: {response.StopDetails?.Explanation}");
-        }
-        if (response.StopReason == "max_tokens")
-        {
-            throw new ClaimExtractionException($"Extraction was cut off at {_options.MaxTokens} tokens.");
-        }
-
-        var json = string.Concat(response.Content.Select(b => b.Value).OfType<TextBlock>().Select(t => t.Text));
-        var extraction = ClaimExtractionJson.Deserialize(json);
-
-        return new ExtractionResult(extraction, response.Usage.InputTokens, response.Usage.OutputTokens, stopwatch.Elapsed);
+        return new ExtractionResult(result.Value, result.InputTokens, result.OutputTokens, result.Latency);
     }
 }

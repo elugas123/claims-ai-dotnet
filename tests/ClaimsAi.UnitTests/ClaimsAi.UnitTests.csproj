@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <!-- Fast, offline tests of Core. -->
+  <!-- Fast, offline tests of Core and of the Infrastructure pieces that don't call external services. -->
 
   <PropertyGroup>
     <IsPackable>false</IsPackable>
@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\ClaimsAi.Core\ClaimsAi.Core.csproj" />
+    <ProjectReference Include="..\..\src\ClaimsAi.Infrastructure\ClaimsAi.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

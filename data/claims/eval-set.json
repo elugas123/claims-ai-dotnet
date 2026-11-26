@@ -2,6 +2,7 @@
   {
     "id": "C001",
     "received_at": "2026-11-03",
+    "expected_coverage": { "verdict": "covered", "clauses": ["AUTO-COMP-2026#1.1", "AUTO-COMP-2026#3.1"] },
     "text": "Hi, my policy is AUTO-448812. Yesterday around 6pm I was stopped at a red light on Elm Street and Main, Springfield, when a pickup truck hit me from behind. The other driver, John Miller, plate KTR-4410, admitted it was his fault. My rear bumper and trunk are smashed. No one was hurt. The shop says about $2,800 to fix it. My plate is JDF-2291.",
     "expected": {
       "claim_type": "auto_collision",
@@ -19,6 +20,7 @@
   {
     "id": "C002",
     "received_at": "2026-11-05",
+    "expected_coverage": { "verdict": "covered", "clauses": ["AUTO-COMP-2026#1.2", "AUTO-COMP-2026#3.2"] },
     "text": "My car was stolen from the parking lot of Riverside Mall last night (Nov 4). It's a 2022 grey sedan, plate MNB-7733, policy AUTO-102938. I already went to the police, report number PR-55120.",
     "expected": {
       "claim_type": "auto_theft",
@@ -36,6 +38,7 @@
   {
     "id": "C003",
     "received_at": "2026-11-07",
+    "expected_coverage": { "verdict": "covered", "clauses": ["AUTO-COMP-2026#1.3", "AUTO-COMP-2026#3.3"] },
     "text": "A rock hit my windshield on Highway 9 this morning and now there is a long crack across the driver side. Plate QWE-1180. I don't remember my policy number, sorry. Glass shop quoted 450 dollars.",
     "expected": {
       "claim_type": "auto_glass",
@@ -53,6 +56,7 @@
   {
     "id": "C004",
     "received_at": "2026-11-10",
+    "expected_coverage": { "verdict": "covered", "clauses": ["HOME-STD-2026#1.2", "HOME-STD-2026#3.2"] },
     "text": "Policy HOME-330145. On Saturday November 8 a pipe under the kitchen sink burst while we were out. When we came back the kitchen floor and the cabinets were flooded. Address: 14 Oak Lane, Riverton. A plumber already fixed the pipe. We think the damage is around 3,500 USD.",
     "expected": {
       "claim_type": "home_water_damage",
@@ -70,6 +74,7 @@
   {
     "id": "C005",
     "received_at": "2026-11-12",
+    "expected_coverage": { "verdict": "covered", "clauses": ["HOME-STD-2026#1.3", "HOME-STD-2026#3.3"] },
     "text": "Someone broke into our apartment (5B, 220 Pine Ave, Lakeside) on November 11 while we were at work. They forced the front door and took a laptop, a TV and some jewelry, maybe 4,000 dollars total. Police report filed, number LK-20981. Policy HOME-771204.",
     "expected": {
       "claim_type": "home_burglary",
@@ -87,6 +92,7 @@
   {
     "id": "C006",
     "received_at": "2026-11-14",
+    "expected_coverage": { "verdict": "covered", "clauses": ["HOME-STD-2026#1.1", "HOME-STD-2026#3.1"] },
     "text": "There was a fire in my garage last night caused by an electrical short. The fire department came and put it out. The garage roof and my tools are destroyed. Policy HOME-559023, 8 Birch Road, Hillview. I have no idea yet how much it costs.",
     "expected": {
       "claim_type": "home_fire",
@@ -104,6 +110,7 @@
   {
     "id": "C007",
     "received_at": "2026-11-16",
+    "expected_coverage": { "verdict": "covered", "clauses": ["AUTO-COMP-2026#1.1", "AUTO-COMP-2026#1.5", "AUTO-COMP-2026#3.1"] },
     "text": "I crashed into another car at the roundabout on Station Road, Millbrook, on 15/11. The other driver hurt her neck and was taken to hospital. Police came and wrote a report (MB-7781). My policy: AUTO-660021, plate ZXC-9087. Front of my car is badly damaged, estimate 6,200 USD.",
     "expected": {
       "claim_type": "auto_collision",
@@ -121,6 +128,7 @@
   {
     "id": "C008",
     "received_at": "2026-11-18",
+    "expected_coverage": { "verdict": "covered", "clauses": ["AUTO-COMP-2026#1.1", "AUTO-COMP-2026#3.1"] },
     "text": "Hola, el domingo 16 de noviembre choqué contra un poste en la Av. Belgrano 1200, Rosario, porque la calle estaba mojada. No hubo heridos ni otro auto involucrado. Patente AB123CD, póliza AUTO-883301. El taller me presupuestó 1.200.000 pesos.",
     "expected": {
       "claim_type": "auto_collision",
@@ -138,6 +146,7 @@
   {
     "id": "C009",
     "received_at": "2026-11-20",
+    "expected_coverage": { "verdict": "needs_review", "clauses": ["HOME-STD-2026#1.3", "HOME-STD-2026#4.3"] },
     "text": "Buenas, ayer entraron a robar a mi casa en Calle Mitre 455, Córdoba. Rompieron la ventana del patio y se llevaron una notebook y una bicicleta. Todavía no hice la denuncia policial. Mi póliza es HOME-120456. Calculo unos 900 dólares.",
     "expected": {
       "claim_type": "home_burglary",
@@ -155,6 +164,7 @@
   {
     "id": "C010",
     "received_at": "2026-11-21",
+    "expected_coverage": { "verdict": "needs_review", "clauses": ["AUTO-COMP-2026#1.1"] },
     "text": "my car got hit while parked, idk when exactly, sometime between tuesday night and this morning. big dent on the passenger door. no note left. plate PLM-3321",
     "expected": {
       "claim_type": "auto_collision",
@@ -172,6 +182,7 @@
   {
     "id": "C011",
     "received_at": "2026-11-23",
+    "expected_coverage": { "verdict": "covered", "clauses": ["HOME-STD-2026#1.4", "HOME-STD-2026#3.1"] },
     "text": "During the storm on November 22 a big tree branch fell on our roof at 31 Cedar Court, Brookfield, and now rain is coming into the bedroom. Policy HOME-404040. Roofer estimates 2,750 USD.",
     "expected": {
       "claim_type": "home_storm",
@@ -189,6 +200,7 @@
   {
     "id": "C012",
     "received_at": "2026-11-25",
+    "expected_coverage": { "verdict": "not_covered", "clauses": ["AUTO-COMP-2026#2.5"] },
     "text": "My engine started making a loud noise and then stopped working on the way to work today. The mechanic says the transmission is gone, about $4,000. Policy AUTO-219876, plate GHJ-5512. Is this covered?",
     "expected": {
       "claim_type": "other",

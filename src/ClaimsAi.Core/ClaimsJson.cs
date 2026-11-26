@@ -4,10 +4,10 @@ using System.Text.Json.Serialization;
 namespace ClaimsAi.Core;
 
 /// <summary>
-/// The JSON contract of <see cref="ClaimExtraction"/>: snake_case wire format and its JSON Schema.
-/// Used by the API, the eval data files and as the structured-output schema for the model.
+/// The JSON contract of the domain: snake_case wire format plus the JSON Schemas the model must follow
+/// (structured outputs). Used by the API, the eval data files and the Claude implementations.
 /// </summary>
-public static class ClaimExtractionJson
+public static class ClaimsJson
 {
     public static readonly JsonSerializerOptions Options = new()
     {
@@ -16,16 +16,17 @@ public static class ClaimExtractionJson
         WriteIndented = true,
     };
 
-    public static ClaimExtraction Deserialize(string json) =>
-        JsonSerializer.Deserialize<ClaimExtraction>(json, Options)
-        ?? throw new JsonException("Model returned an empty extraction.");
+    public static T Deserialize<T>(string json) =>
+        JsonSerializer.Deserialize<T>(json, Options)
+        ?? throw new JsonException($"Empty JSON for {typeof(T).Name}.");
 
-    public static string Serialize(ClaimExtraction extraction) =>
-        JsonSerializer.Serialize(extraction, Options);
+    public static string Serialize<T>(T value) => JsonSerializer.Serialize(value, Options);
 
     // Structured outputs require additionalProperties:false and every property listed in "required";
     // optional values are expressed as nullable instead.
-    public const string SchemaJson = """
+
+    /// <summary>Schema of <see cref="ClaimExtraction"/>.</summary>
+    public static Dictionary<string, JsonElement> ExtractionSchema { get; } = Parse("""
     {
       "type": "object",
       "additionalProperties": false,
@@ -51,8 +52,24 @@ public static class ClaimExtractionJson
         "currency", "injuries_reported", "police_report_filed", "third_party_involved", "summary", "missing_information"
       ]
     }
-    """;
+    """);
 
-    public static Dictionary<string, JsonElement> Schema { get; } =
-        JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(SchemaJson)!;
+    /// <summary>Schema of <see cref="CoverageDecision"/>.</summary>
+    public static Dictionary<string, JsonElement> CoverageSchema { get; } = Parse("""
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "verdict": { "type": "string", "enum": ["covered", "not_covered", "needs_review"] },
+        "cited_clauses": { "type": "array", "items": { "type": "string" } },
+        "deductible": { "anyOf": [{ "type": "string" }, { "type": "null" }] },
+        "required_documents": { "type": "array", "items": { "type": "string" } },
+        "reasoning": { "type": "string" }
+      },
+      "required": ["verdict", "cited_clauses", "deductible", "required_documents", "reasoning"]
+    }
+    """);
+
+    private static Dictionary<string, JsonElement> Parse(string schema) =>
+        JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(schema)!;
 }

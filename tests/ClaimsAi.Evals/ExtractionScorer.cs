@@ -3,15 +3,23 @@ using ClaimsAi.Core;
 
 namespace ClaimsAi.Evals;
 
-/// <summary>A labeled claim: input text plus the extraction a careful human would produce.</summary>
-public sealed record EvalCase(string Id, DateOnly ReceivedAt, string Text, ClaimExtraction Expected)
+/// <summary>A labeled claim: input text plus the extraction and coverage decision a careful human would produce.</summary>
+public sealed record EvalCase(
+    string Id,
+    DateOnly ReceivedAt,
+    string Text,
+    ClaimExtraction Expected,
+    ExpectedCoverage ExpectedCoverage)
 {
     public ClaimSubmission ToSubmission() => new(Text, ReceivedAt);
 
     public static IReadOnlyList<EvalCase> LoadFile(string path) =>
-        JsonSerializer.Deserialize<List<EvalCase>>(File.ReadAllText(path), ClaimExtractionJson.Options)
+        JsonSerializer.Deserialize<List<EvalCase>>(File.ReadAllText(path), ClaimsJson.Options)
         ?? throw new JsonException($"No eval cases in {path}");
 }
+
+/// <summary>The right verdict and the clauses a correct answer must rely on.</summary>
+public sealed record ExpectedCoverage(CoverageVerdict Verdict, IReadOnlyList<string> Clauses);
 
 public sealed record FieldScore(string Field, bool Match, string? Expected, string? Actual);
 

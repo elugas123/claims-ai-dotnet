@@ -8,7 +8,7 @@ public class SchemaTests
     [Fact]
     public void Schema_lists_every_property_as_required_and_forbids_extras()
     {
-        var schema = ClaimExtractionJson.Schema;
+        var schema = ClaimsJson.ExtractionSchema;
         var properties = schema["properties"].EnumerateObject().Select(p => p.Name).ToHashSet();
         var required = schema["required"].EnumerateArray().Select(e => e.GetString()!).ToHashSet();
 
@@ -19,7 +19,7 @@ public class SchemaTests
     [Fact]
     public void Schema_properties_match_the_csharp_record()
     {
-        var properties = ClaimExtractionJson.Schema["properties"].EnumerateObject().Select(p => p.Name).ToHashSet();
+        var properties = ClaimsJson.ExtractionSchema["properties"].EnumerateObject().Select(p => p.Name).ToHashSet();
         var recordProperties = typeof(ClaimExtraction).GetProperties()
             .Select(p => JsonNamingPolicy.SnakeCaseLower.ConvertName(p.Name))
             .ToHashSet();
@@ -30,7 +30,7 @@ public class SchemaTests
     [Fact]
     public void Schema_claim_types_match_the_enum()
     {
-        var schemaValues = ClaimExtractionJson.Schema["properties"].GetProperty("claim_type").GetProperty("enum")
+        var schemaValues = ClaimsJson.ExtractionSchema["properties"].GetProperty("claim_type").GetProperty("enum")
             .EnumerateArray().Select(e => e.GetString()!).ToHashSet();
         var enumValues = Enum.GetNames<ClaimType>().Select(JsonNamingPolicy.SnakeCaseLower.ConvertName).ToHashSet();
 
@@ -60,7 +60,7 @@ public class JsonTests
         }
         """;
 
-        var extraction = ClaimExtractionJson.Deserialize(json);
+        var extraction = ClaimsJson.Deserialize<ClaimExtraction>(json);
 
         Assert.Equal(ClaimType.HomeWaterDamage, extraction.ClaimType);
         Assert.Equal(3500m, extraction.EstimatedAmount);

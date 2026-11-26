@@ -112,7 +112,7 @@ public sealed record EvalReport(
     {
         Directory.CreateDirectory(directory);
         var path = Path.Combine(directory, $"{RanAt:yyyyMMdd-HHmmss}-{Model}-{Effort}.json");
-        File.WriteAllText(path, JsonSerializer.Serialize(this, ClaimExtractionJson.Options));
+        File.WriteAllText(path, JsonSerializer.Serialize(this, ClaimsJson.Options));
         return path;
     }
 }

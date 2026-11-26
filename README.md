@@ -17,8 +17,8 @@ AI-powered insurance claims processing for a fictional insurer, built with .NET.
 
 - ASP.NET Core minimal API (.NET 10)
 - Claude via the official Anthropic C# SDK, with structured outputs
+- RAG over policy documents with in-memory BM25 keyword search
 - xUnit for unit tests and evals
-- Vector store for RAG (planned)
 
 ## Architecture
 
@@ -38,15 +38,15 @@ Kept deliberately simple (KISS): no repositories, mediators or CQRS until a real
 
 ```
 src/
-  ClaimsAi.Core            ClaimExtraction, IClaimExtractor, JSON contract
-  ClaimsAi.Infrastructure  ClaudeClaimExtractor
+  ClaimsAi.Core            domain model, interfaces, ClaimAssessmentService (the pipeline), JSON contract
+  ClaimsAi.Infrastructure  Claude extractor + coverage checker, policy loader, BM25 retriever
   ClaimsAi.Api             HTTP endpoints
 tests/
-  ClaimsAi.UnitTests       fast offline tests of Core
-  ClaimsAi.Evals           scorer + eval runner; live eval against Claude
+  ClaimsAi.UnitTests       fast offline tests
+  ClaimsAi.Evals           extraction + RAG evals (offline retrieval eval, live evals against Claude)
 data/
   policies                 synthetic policy documents (Contoso Insurance)
-  claims                   labeled eval set: claim text + expected extraction
+  claims                   labeled eval set: claim text + expected extraction + expected coverage
 evals/results              saved eval runs (JSON)
 ```
 
@@ -68,6 +68,43 @@ curl -X POST http://localhost:5295/claims/extract \
 ```
 
 The extractor makes one Claude call with a JSON Schema structured output, so the response always matches `ClaimExtraction`.
+
+`POST /claims/assess` runs the full pipeline and returns the extraction, the coverage decision and the clauses it
+was based on:
+
+```json
+{
+  "coverage": {
+    "verdict": "not_covered",
+    "cited_clauses": ["AUTO-COMP-2026#2.5"],
+    "deductible": null,
+    "required_documents": [],
+    "reasoning": "A failed transmission is a mechanical failure, which clause 2.5 excludes..."
+  },
+  "retrieved_clauses": [{ "id": "AUTO-COMP-2026#2.5", "section": "Exclusions", "text": "Mechanical failure, ..." }]
+}
+```
+
+## Coverage check (RAG)
+
+```
+claim text ──► extract (Claude) ──► build query ──► BM25 over policy clauses ──► top 8 clauses
+                                                                                    │
+                                    verdict + citations + deductible  ◄── Claude ◄──┘
+```
+
+1. **Chunking** – policies are split into their numbered clauses (`AUTO-COMP-2026#2.5`), so every chunk is a
+   citable unit with its section ("Exclusions", "Deductibles").
+2. **Retrieval** – BM25 keyword search, filtered to the claim's product line (auto/home). The query combines the
+   claim type, facts from the extraction worded like the policies ("bodily injury", "third parties"), the summary
+   and the customer's text.
+3. **Generation** – Claude decides `covered` / `not_covered` / `needs_review` using only those clauses, with a
+   structured output. Citations to clauses it was not given are dropped.
+
+Why BM25 and not embeddings: policy language is precise and repetitive (collision, theft, deductible), keyword
+search handles it well, and it needs no extra service. With two short policies the whole document would fit in the
+prompt; retrieval is here so the design scales to hundreds of policies, and it sits behind `IPolicyRetriever` so
+embeddings can replace it if the retrieval eval shows misses.
 
 ## Evals
 
@@ -96,11 +133,22 @@ Tokens    ... in · ... out · $...
 Latency   p50 ...s · p95 ...s
 ```
 
+The RAG evals are split in two so a failure points at the right half:
+
+| Eval | Runs | Measures | Current |
+|---|---|---|---|
+| `Retrieval_finds_the_clauses_each_claim_needs` | offline, every `dotnet test` | recall@8 of the labeled clauses | 95.7% (22/23) |
+| `Coverage_verdicts_and_citations_match_the_labels` | live (`Category=LiveEval`) | verdict accuracy, citation recall | not run yet |
+
+The retrieval eval drove the design: top 6 missed deductible and exclusion clauses, and adding injury / third-party
+terms from the extraction found the liability clause. The one remaining miss (C012, a mechanical failure) happens
+because the offline eval has no model summary; in the live pipeline the summary names the failure.
+
 ## Roadmap
 
 - [x] Extraction with structured outputs + labeled eval set
 - [x] Eval runner: per-field accuracy, cost, latency, saved history
-- [ ] First real eval run and prompt iteration
-- [ ] Month 1 – RAG over policies
+- [x] RAG over policies: clause chunking, BM25 retrieval, coverage decision with citations, retrieval eval
+- [ ] First real eval runs and prompt iteration
 - [ ] Month 2 – agent + evals
 - [ ] Month 3 – public deploy + demo video

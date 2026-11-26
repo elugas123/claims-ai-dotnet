@@ -12,6 +12,3 @@ public sealed record ExtractionResult(
     long InputTokens,
     long OutputTokens,
     TimeSpan Latency);
-
-/// <summary>The extractor could not produce a valid result (declined, truncated, malformed output).</summary>
-public sealed class ClaimExtractionException(string message) : Exception(message);

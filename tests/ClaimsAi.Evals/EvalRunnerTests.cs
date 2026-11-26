@@ -18,11 +18,13 @@ public class EvalRunnerTests
         ThirdPartyInvolved = false,
     };
 
+    private static readonly ExpectedCoverage Coverage = new(CoverageVerdict.Covered, ["AUTO-COMP-2026#1.3"]);
+
     private static readonly IReadOnlyList<EvalCase> Cases =
     [
-        new("A", new DateOnly(2026, 11, 7), "perfect", Label),
-        new("B", new DateOnly(2026, 11, 7), "wrong date", Label),
-        new("C", new DateOnly(2026, 11, 7), "throws", Label),
+        new("A", new DateOnly(2026, 11, 7), "perfect", Label, Coverage),
+        new("B", new DateOnly(2026, 11, 7), "wrong date", Label, Coverage),
+        new("C", new DateOnly(2026, 11, 7), "throws", Label, Coverage),
     ];
 
     /// <summary>A: returns the label. B: gets the date wrong. C: throws.</summary>
@@ -34,7 +36,7 @@ public class EvalRunnerTests
                 "perfect" => Task.FromResult(new ExtractionResult(Label, 1000, 200, TimeSpan.FromSeconds(1))),
                 "wrong date" => Task.FromResult(new ExtractionResult(
                     Label with { IncidentDate = "2026-11-06" }, 3000, 400, TimeSpan.FromSeconds(3))),
-                _ => throw new ClaimExtractionException("boom"),
+                _ => throw new ClaimProcessingException("boom"),
             };
     }
 
