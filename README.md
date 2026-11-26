@@ -25,6 +25,7 @@ AI-powered insurance claims processing for a fictional insurer, built with .NET.
 ```
 src/ClaimsAi.Core     domain model, Claude-based extractor, eval scorer
 src/ClaimsAi.Api      ASP.NET Core minimal API
+tools/ClaimsAi.Evals  eval runner (console)
 tests/ClaimsAi.Tests  offline unit tests (no API key needed)
 data/policies         synthetic policy documents (Contoso Insurance)
 data/claims           labeled eval set: claim text + expected extraction
@@ -47,9 +48,37 @@ curl -X POST http://localhost:5295/claims/extract \
 
 The extractor makes one Claude call with a JSON Schema structured output, so the response always matches `ClaimExtraction`.
 
+## Evals
+
+`tools/ClaimsAi.Evals` runs the extractor over the labeled eval set and reports accuracy per field, cost and latency.
+Each run is saved to `evals/results/` so changes to the prompt, model or effort can be compared over time.
+
+```bash
+dotnet run --project tools/ClaimsAi.Evals                    # needs ANTHROPIC_API_KEY
+dotnet run --project tools/ClaimsAi.Evals -- --effort medium --min-accuracy 0.9
+dotnet run --project tools/ClaimsAi.Evals -- --self-check    # no API calls, checks the pipeline
+```
+
+```
+  C010  FAIL   9/10    2.4s
+          incident_date: expected null, got 2026-11-18
+...
+Field accuracy
+  claim_type             100.0 %  12/12
+  incident_date           91.7 %  11/12
+...
+Overall   ...% of fields · .../12 cases perfect · 0 errors
+Tokens    ... in · ... out · $...
+Latency   p50 ...s · p95 ...s
+```
+
+`--min-accuracy` makes the command exit with code 1 below the threshold, so it can gate a CI pipeline.
+
 ## Roadmap
 
 - [x] Extraction with structured outputs + labeled eval set
-- [ ] Month 1 – eval runner + RAG over policies
+- [x] Eval runner: per-field accuracy, cost, latency, saved history
+- [ ] First real eval run and prompt iteration
+- [ ] Month 1 – RAG over policies
 - [ ] Month 2 – agent + evals
 - [ ] Month 3 – public deploy + demo video
