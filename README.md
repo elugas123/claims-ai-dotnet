@@ -70,7 +70,7 @@ curl -X POST http://localhost:5295/claims/extract \
 The extractor makes one Claude call with a JSON Schema structured output, so the response always matches `ClaimExtraction`.
 
 `POST /claims/assess` runs the full pipeline and returns the extraction, the coverage decision and the clauses it
-was based on:
+was based on (illustrative response, trimmed):
 
 ```json
 {
