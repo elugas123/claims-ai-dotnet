@@ -55,6 +55,13 @@ Shared build settings live in `Directory.Build.props` and package versions in `D
 
 ## Getting started
 
+API keys never go in the repo: use the `ANTHROPIC_API_KEY` environment variable or `dotnet user-secrets`.
+A pre-commit hook blocks commits containing an Anthropic key; enable it once per clone:
+
+```bash
+git config core.hooksPath .githooks
+```
+
 ```bash
 dotnet test                       # all offline tests; the live eval is skipped without an API key
 cd src/ClaimsAi.Api
