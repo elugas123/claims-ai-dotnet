@@ -40,7 +40,7 @@ dotnet run
 ```
 
 ```bash
-curl -X POST http://localhost:5000/claims/extract \
+curl -X POST http://localhost:5295/claims/extract \
   -H "Content-Type: application/json" \
   -d '{"text": "My car was stolen last night from Riverside Mall. Plate MNB-7733, policy AUTO-102938.", "received_at": "2026-11-05"}'
 ```
