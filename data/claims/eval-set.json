@@ -1,0 +1,206 @@
+[
+  {
+    "id": "C001",
+    "received_at": "2026-11-03",
+    "text": "Hi, my policy is AUTO-448812. Yesterday around 6pm I was stopped at a red light on Elm Street and Main, Springfield, when a pickup truck hit me from behind. The other driver, John Miller, plate KTR-4410, admitted it was his fault. My rear bumper and trunk are smashed. No one was hurt. The shop says about $2,800 to fix it. My plate is JDF-2291.",
+    "expected": {
+      "claim_type": "auto_collision",
+      "incident_date": "2026-11-02",
+      "location": "Elm Street and Main, Springfield",
+      "policy_number": "AUTO-448812",
+      "vehicle_plate": "JDF-2291",
+      "estimated_amount": 2800,
+      "currency": "USD",
+      "injuries_reported": false,
+      "police_report_filed": false,
+      "third_party_involved": true
+    }
+  },
+  {
+    "id": "C002",
+    "received_at": "2026-11-05",
+    "text": "My car was stolen from the parking lot of Riverside Mall last night (Nov 4). It's a 2022 grey sedan, plate MNB-7733, policy AUTO-102938. I already went to the police, report number PR-55120.",
+    "expected": {
+      "claim_type": "auto_theft",
+      "incident_date": "2026-11-04",
+      "location": "Riverside Mall parking lot",
+      "policy_number": "AUTO-102938",
+      "vehicle_plate": "MNB-7733",
+      "estimated_amount": null,
+      "currency": null,
+      "injuries_reported": false,
+      "police_report_filed": true,
+      "third_party_involved": false
+    }
+  },
+  {
+    "id": "C003",
+    "received_at": "2026-11-07",
+    "text": "A rock hit my windshield on Highway 9 this morning and now there is a long crack across the driver side. Plate QWE-1180. I don't remember my policy number, sorry. Glass shop quoted 450 dollars.",
+    "expected": {
+      "claim_type": "auto_glass",
+      "incident_date": "2026-11-07",
+      "location": "Highway 9",
+      "policy_number": null,
+      "vehicle_plate": "QWE-1180",
+      "estimated_amount": 450,
+      "currency": "USD",
+      "injuries_reported": false,
+      "police_report_filed": false,
+      "third_party_involved": false
+    }
+  },
+  {
+    "id": "C004",
+    "received_at": "2026-11-10",
+    "text": "Policy HOME-330145. On Saturday November 8 a pipe under the kitchen sink burst while we were out. When we came back the kitchen floor and the cabinets were flooded. Address: 14 Oak Lane, Riverton. A plumber already fixed the pipe. We think the damage is around 3,500 USD.",
+    "expected": {
+      "claim_type": "home_water_damage",
+      "incident_date": "2026-11-08",
+      "location": "14 Oak Lane, Riverton",
+      "policy_number": "HOME-330145",
+      "vehicle_plate": null,
+      "estimated_amount": 3500,
+      "currency": "USD",
+      "injuries_reported": false,
+      "police_report_filed": false,
+      "third_party_involved": false
+    }
+  },
+  {
+    "id": "C005",
+    "received_at": "2026-11-12",
+    "text": "Someone broke into our apartment (5B, 220 Pine Ave, Lakeside) on November 11 while we were at work. They forced the front door and took a laptop, a TV and some jewelry, maybe 4,000 dollars total. Police report filed, number LK-20981. Policy HOME-771204.",
+    "expected": {
+      "claim_type": "home_burglary",
+      "incident_date": "2026-11-11",
+      "location": "220 Pine Ave, Apt 5B, Lakeside",
+      "policy_number": "HOME-771204",
+      "vehicle_plate": null,
+      "estimated_amount": 4000,
+      "currency": "USD",
+      "injuries_reported": false,
+      "police_report_filed": true,
+      "third_party_involved": false
+    }
+  },
+  {
+    "id": "C006",
+    "received_at": "2026-11-14",
+    "text": "There was a fire in my garage last night caused by an electrical short. The fire department came and put it out. The garage roof and my tools are destroyed. Policy HOME-559023, 8 Birch Road, Hillview. I have no idea yet how much it costs.",
+    "expected": {
+      "claim_type": "home_fire",
+      "incident_date": "2026-11-13",
+      "location": "8 Birch Road, Hillview",
+      "policy_number": "HOME-559023",
+      "vehicle_plate": null,
+      "estimated_amount": null,
+      "currency": null,
+      "injuries_reported": false,
+      "police_report_filed": false,
+      "third_party_involved": false
+    }
+  },
+  {
+    "id": "C007",
+    "received_at": "2026-11-16",
+    "text": "I crashed into another car at the roundabout on Station Road, Millbrook, on 15/11. The other driver hurt her neck and was taken to hospital. Police came and wrote a report (MB-7781). My policy: AUTO-660021, plate ZXC-9087. Front of my car is badly damaged, estimate 6,200 USD.",
+    "expected": {
+      "claim_type": "auto_collision",
+      "incident_date": "2026-11-15",
+      "location": "Station Road roundabout, Millbrook",
+      "policy_number": "AUTO-660021",
+      "vehicle_plate": "ZXC-9087",
+      "estimated_amount": 6200,
+      "currency": "USD",
+      "injuries_reported": true,
+      "police_report_filed": true,
+      "third_party_involved": true
+    }
+  },
+  {
+    "id": "C008",
+    "received_at": "2026-11-18",
+    "text": "Hola, el domingo 16 de noviembre choqué contra un poste en la Av. Belgrano 1200, Rosario, porque la calle estaba mojada. No hubo heridos ni otro auto involucrado. Patente AB123CD, póliza AUTO-883301. El taller me presupuestó 1.200.000 pesos.",
+    "expected": {
+      "claim_type": "auto_collision",
+      "incident_date": "2026-11-16",
+      "location": "Av. Belgrano 1200, Rosario",
+      "policy_number": "AUTO-883301",
+      "vehicle_plate": "AB123CD",
+      "estimated_amount": 1200000,
+      "currency": "ARS",
+      "injuries_reported": false,
+      "police_report_filed": false,
+      "third_party_involved": false
+    }
+  },
+  {
+    "id": "C009",
+    "received_at": "2026-11-20",
+    "text": "Buenas, ayer entraron a robar a mi casa en Calle Mitre 455, Córdoba. Rompieron la ventana del patio y se llevaron una notebook y una bicicleta. Todavía no hice la denuncia policial. Mi póliza es HOME-120456. Calculo unos 900 dólares.",
+    "expected": {
+      "claim_type": "home_burglary",
+      "incident_date": "2026-11-19",
+      "location": "Calle Mitre 455, Córdoba",
+      "policy_number": "HOME-120456",
+      "vehicle_plate": null,
+      "estimated_amount": 900,
+      "currency": "USD",
+      "injuries_reported": false,
+      "police_report_filed": false,
+      "third_party_involved": false
+    }
+  },
+  {
+    "id": "C010",
+    "received_at": "2026-11-21",
+    "text": "my car got hit while parked, idk when exactly, sometime between tuesday night and this morning. big dent on the passenger door. no note left. plate PLM-3321",
+    "expected": {
+      "claim_type": "auto_collision",
+      "incident_date": null,
+      "location": null,
+      "policy_number": null,
+      "vehicle_plate": "PLM-3321",
+      "estimated_amount": null,
+      "currency": null,
+      "injuries_reported": false,
+      "police_report_filed": false,
+      "third_party_involved": true
+    }
+  },
+  {
+    "id": "C011",
+    "received_at": "2026-11-23",
+    "text": "During the storm on November 22 a big tree branch fell on our roof at 31 Cedar Court, Brookfield, and now rain is coming into the bedroom. Policy HOME-404040. Roofer estimates 2,750 USD.",
+    "expected": {
+      "claim_type": "home_storm",
+      "incident_date": "2026-11-22",
+      "location": "31 Cedar Court, Brookfield",
+      "policy_number": "HOME-404040",
+      "vehicle_plate": null,
+      "estimated_amount": 2750,
+      "currency": "USD",
+      "injuries_reported": false,
+      "police_report_filed": false,
+      "third_party_involved": false
+    }
+  },
+  {
+    "id": "C012",
+    "received_at": "2026-11-25",
+    "text": "My engine started making a loud noise and then stopped working on the way to work today. The mechanic says the transmission is gone, about $4,000. Policy AUTO-219876, plate GHJ-5512. Is this covered?",
+    "expected": {
+      "claim_type": "other",
+      "incident_date": "2026-11-25",
+      "location": null,
+      "policy_number": "AUTO-219876",
+      "vehicle_plate": "GHJ-5512",
+      "estimated_amount": 4000,
+      "currency": "USD",
+      "injuries_reported": false,
+      "police_report_filed": false,
+      "third_party_involved": false
+    }
+  }
+]
