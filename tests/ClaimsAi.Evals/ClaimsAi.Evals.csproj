@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Quality evals of the AI extractor against the labeled set in data/claims.
+       Scorer tests run offline; LiveExtractionEval calls Claude only when ANTHROPIC_API_KEY is set. -->
+
+  <PropertyGroup>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="coverlet.collector" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="xunit" />
+    <PackageReference Include="xunit.runner.visualstudio" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Xunit" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\ClaimsAi.Core\ClaimsAi.Core.csproj" />
+    <ProjectReference Include="..\..\src\ClaimsAi.Infrastructure\ClaimsAi.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>

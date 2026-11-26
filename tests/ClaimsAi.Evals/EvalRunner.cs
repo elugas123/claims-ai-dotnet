@@ -1,6 +1,9 @@
-using ClaimsAi.Core.Extraction;
+using System.Globalization;
+using System.Text;
+using System.Text.Json;
+using ClaimsAi.Core;
 
-namespace ClaimsAi.Core.Evals;
+namespace ClaimsAi.Evals;
 
 /// <summary>Price per million tokens, in USD.</summary>
 public sealed record ModelPricing(decimal InputPerMillion, decimal OutputPerMillion)
@@ -66,6 +69,52 @@ public sealed record EvalReport(
         var index = (int)Math.Ceiling(p * latencies.Count) - 1;
         return latencies[Math.Clamp(index, 0, latencies.Count - 1)];
     }
+
+    /// <summary>Human-readable report: each case with its misses, accuracy per field, cost and latency.</summary>
+    public string ToText()
+    {
+        var text = new StringBuilder();
+        var inv = CultureInfo.InvariantCulture;
+        text.AppendLine(inv, $"Eval · {Model} · effort {Effort} · {Cases.Count} cases");
+        text.AppendLine();
+
+        foreach (var c in Cases)
+        {
+            if (c.Error is not null)
+            {
+                text.AppendLine(inv, $"  {c.CaseId}  ERROR  {c.Error}");
+                continue;
+            }
+            var status = c.Score!.Perfect ? "PASS" : "FAIL";
+            text.AppendLine(inv, $"  {c.CaseId}  {status}  {c.Score.Matches,2}/{c.Score.Fields.Count}  {c.Extraction!.Latency.TotalSeconds,5:0.0}s");
+            foreach (var miss in c.Score.Fields.Where(f => !f.Match))
+            {
+                text.AppendLine(inv, $"          {miss.Field}: expected {miss.Expected ?? "null"}, got {miss.Actual ?? "null"}");
+            }
+        }
+
+        text.AppendLine();
+        text.AppendLine("Field accuracy");
+        foreach (var f in FieldAccuracies)
+        {
+            text.AppendLine(inv, $"  {f.Field,-22} {f.Accuracy * 100,6:0.0}%  {f.Matches}/{f.Total}");
+        }
+
+        text.AppendLine();
+        text.AppendLine(inv, $"Overall   {OverallAccuracy * 100:0.0}% of fields · {PerfectCases}/{Cases.Count} cases perfect · {Errors} errors");
+        text.AppendLine(inv, $"Tokens    {InputTokens:N0} in · {OutputTokens:N0} out · ${CostUsd:0.0000}");
+        text.AppendLine(inv, $"Latency   p50 {LatencyP50.TotalSeconds:0.0}s · p95 {LatencyP95.TotalSeconds:0.0}s");
+        return text.ToString();
+    }
+
+    /// <summary>Saves the report as JSON so runs can be compared over time. Returns the file path.</summary>
+    public string SaveTo(string directory)
+    {
+        Directory.CreateDirectory(directory);
+        var path = Path.Combine(directory, $"{RanAt:yyyyMMdd-HHmmss}-{Model}-{Effort}.json");
+        File.WriteAllText(path, JsonSerializer.Serialize(this, ClaimExtractionJson.Options));
+        return path;
+    }
 }
 
 public static class EvalRunner
@@ -77,7 +126,6 @@ public static class EvalRunner
         string effort,
         ModelPricing pricing,
         int maxConcurrency = 4,
-        IProgress<CaseResult>? progress = null,
         CancellationToken cancellationToken = default)
     {
         var ranAt = DateTimeOffset.UtcNow;
@@ -88,9 +136,7 @@ public static class EvalRunner
             await gate.WaitAsync(cancellationToken);
             try
             {
-                var result = await RunCaseAsync(evalCase, extractor, cancellationToken);
-                progress?.Report(result);
-                return result;
+                return await RunCaseAsync(evalCase, extractor, cancellationToken);
             }
             finally
             {

@@ -1,14 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
-  <ItemGroup>
-    <ProjectReference Include="..\ClaimsAi.Core\ClaimsAi.Core.csproj" />
-  </ItemGroup>
+  <!-- HTTP entry point. Program.cs is the composition root: the only place that knows Infrastructure types. -->
 
   <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>e8642d4f-9864-498c-9eae-c2d15c6b56fe</UserSecretsId>
   </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ClaimsAi.Core\ClaimsAi.Core.csproj" />
+    <ProjectReference Include="..\ClaimsAi.Infrastructure\ClaimsAi.Infrastructure.csproj" />
+  </ItemGroup>
 
 </Project>

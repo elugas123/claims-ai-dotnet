@@ -1,7 +1,8 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Anthropic;
-using ClaimsAi.Core.Extraction;
+using ClaimsAi.Core;
+using ClaimsAi.Infrastructure.Claude;
 
 var builder = WebApplication.CreateBuilder(args);
 

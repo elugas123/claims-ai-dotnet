@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Implementations of Core interfaces that talk to the outside world (Claude API). -->
+
+  <ItemGroup>
+    <PackageReference Include="Anthropic" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ClaimsAi.Core\ClaimsAi.Core.csproj" />
+  </ItemGroup>
+
+</Project>

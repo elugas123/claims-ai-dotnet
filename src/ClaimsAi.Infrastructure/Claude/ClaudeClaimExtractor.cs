@@ -1,8 +1,9 @@
 using System.Diagnostics;
 using Anthropic;
 using Anthropic.Models.Messages;
+using ClaimsAi.Core;
 
-namespace ClaimsAi.Core.Extraction;
+namespace ClaimsAi.Infrastructure.Claude;
 
 public sealed record ClaudeExtractorOptions
 {
@@ -79,5 +80,3 @@ public sealed class ClaudeClaimExtractor(AnthropicClient client, ClaudeExtractor
         return new ExtractionResult(extraction, response.Usage.InputTokens, response.Usage.OutputTokens, stopwatch.Elapsed);
     }
 }
-
-public sealed class ClaimExtractionException(string message) : Exception(message);

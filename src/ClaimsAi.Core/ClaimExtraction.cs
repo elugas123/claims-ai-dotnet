@@ -1,16 +1,4 @@
-namespace ClaimsAi.Core.Extraction;
-
-public enum ClaimType
-{
-    AutoCollision,
-    AutoTheft,
-    AutoGlass,
-    HomeWaterDamage,
-    HomeFire,
-    HomeBurglary,
-    HomeStorm,
-    Other,
-}
+namespace ClaimsAi.Core;
 
 /// <summary>Structured data extracted from a free-text claim report.</summary>
 public sealed record ClaimExtraction
@@ -37,18 +25,4 @@ public sealed record ClaimExtraction
 
     /// <summary>Information the policy requires that the report doesn't include.</summary>
     public IReadOnlyList<string> MissingInformation { get; init; } = [];
-}
-
-/// <summary>A claim as it arrives: the customer's text plus the day it was received (to resolve "yesterday").</summary>
-public sealed record ClaimSubmission(string Text, DateOnly ReceivedAt);
-
-public sealed record ExtractionResult(
-    ClaimExtraction Extraction,
-    long InputTokens,
-    long OutputTokens,
-    TimeSpan Latency);
-
-public interface IClaimExtractor
-{
-    Task<ExtractionResult> ExtractAsync(ClaimSubmission submission, CancellationToken cancellationToken = default);
 }

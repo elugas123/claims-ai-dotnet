@@ -1,7 +1,6 @@
-using ClaimsAi.Core.Evals;
-using ClaimsAi.Core.Extraction;
+using ClaimsAi.Core;
 
-namespace ClaimsAi.Tests;
+namespace ClaimsAi.Evals;
 
 public class EvalRunnerTests
 {
@@ -76,6 +75,18 @@ public class EvalRunnerTests
         Assert.Equal(0.028m, report.CostUsd);
         Assert.Equal(TimeSpan.FromSeconds(1), report.LatencyP50);
         Assert.Equal(TimeSpan.FromSeconds(3), report.LatencyP95);
+    }
+
+    [Fact]
+    public async Task Text_report_shows_misses_errors_and_totals()
+    {
+        var text = (await Run()).ToText();
+
+        Assert.Contains("A  PASS  10/10", text);
+        Assert.Contains("incident_date: expected 2026-11-07, got 2026-11-06", text);
+        Assert.Contains("C  ERROR", text);
+        Assert.Contains("Overall   63.3% of fields", text);
+        Assert.Contains("$0.0280", text);
     }
 
     [Fact]

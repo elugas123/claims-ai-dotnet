@@ -1,7 +1,7 @@
 using System.Text.Json;
-using ClaimsAi.Core.Extraction;
+using ClaimsAi.Core;
 
-namespace ClaimsAi.Core.Evals;
+namespace ClaimsAi.Evals;
 
 /// <summary>A labeled claim: input text plus the extraction a careful human would produce.</summary>
 public sealed record EvalCase(string Id, DateOnly ReceivedAt, string Text, ClaimExtraction Expected)

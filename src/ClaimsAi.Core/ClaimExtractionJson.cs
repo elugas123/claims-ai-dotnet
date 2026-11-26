@@ -1,9 +1,12 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace ClaimsAi.Core.Extraction;
+namespace ClaimsAi.Core;
 
-/// <summary>JSON wire format (snake_case) and the JSON Schema sent to the model as a structured output.</summary>
+/// <summary>
+/// The JSON contract of <see cref="ClaimExtraction"/>: snake_case wire format and its JSON Schema.
+/// Used by the API, the eval data files and as the structured-output schema for the model.
+/// </summary>
 public static class ClaimExtractionJson
 {
     public static readonly JsonSerializerOptions Options = new()
