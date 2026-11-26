@@ -1,0 +1,111 @@
+[
+  {
+    "policy_number": "AUTO-448812",
+    "holder_name": "Emily Carter",
+    "status": "active",
+    "start_date": "2023-03-01",
+    "end_date": "2027-03-01",
+    "address": "52 Maple Street, Springfield",
+    "vehicle_plates": ["JDF-2291"],
+    "claims": []
+  },
+  {
+    "policy_number": "AUTO-102938",
+    "holder_name": "Daniel Brooks",
+    "status": "active",
+    "start_date": "2026-10-20",
+    "end_date": "2027-10-20",
+    "address": "9 Harbor View, Riverside",
+    "vehicle_plates": ["MNB-7733"],
+    "claims": [
+      { "date": "2025-06-14", "claim_type": "auto_theft", "amount": 18000, "currency": "USD", "outcome": "paid (previous insurer policy AUTO-071155)" }
+    ]
+  },
+  {
+    "policy_number": "HOME-330145",
+    "holder_name": "Laura Kim",
+    "status": "active",
+    "start_date": "2021-05-10",
+    "end_date": "2027-05-10",
+    "address": "14 Oak Lane, Riverton",
+    "vehicle_plates": [],
+    "claims": []
+  },
+  {
+    "policy_number": "HOME-771204",
+    "holder_name": "Marcus Reed",
+    "status": "active",
+    "start_date": "2024-01-15",
+    "end_date": "2027-01-15",
+    "address": "220 Pine Ave, Apt 5B, Lakeside",
+    "vehicle_plates": [],
+    "claims": [
+      { "date": "2026-02-03", "claim_type": "home_burglary", "amount": 3500, "currency": "USD", "outcome": "paid" },
+      { "date": "2026-07-21", "claim_type": "home_burglary", "amount": 2900, "currency": "USD", "outcome": "paid" }
+    ]
+  },
+  {
+    "policy_number": "HOME-559023",
+    "holder_name": "Olivia Grant",
+    "status": "lapsed",
+    "start_date": "2025-10-31",
+    "end_date": "2026-10-31",
+    "address": "8 Birch Road, Hillview",
+    "vehicle_plates": [],
+    "claims": []
+  },
+  {
+    "policy_number": "AUTO-660021",
+    "holder_name": "Samuel Ortiz",
+    "status": "active",
+    "start_date": "2022-08-01",
+    "end_date": "2027-08-01",
+    "address": "77 Station Road, Millbrook",
+    "vehicle_plates": ["ZXC-9087"],
+    "claims": [
+      { "date": "2024-04-10", "claim_type": "auto_glass", "amount": 380, "currency": "USD", "outcome": "paid" }
+    ]
+  },
+  {
+    "policy_number": "AUTO-883301",
+    "holder_name": "Martina López",
+    "status": "active",
+    "start_date": "2024-09-01",
+    "end_date": "2027-09-01",
+    "address": "Av. Pellegrini 850, Rosario",
+    "vehicle_plates": ["AB123CD"],
+    "claims": []
+  },
+  {
+    "policy_number": "HOME-120456",
+    "holder_name": "Julián Pérez",
+    "status": "active",
+    "start_date": "2023-11-01",
+    "end_date": "2027-11-01",
+    "address": "Calle Mitre 455, Córdoba",
+    "vehicle_plates": [],
+    "claims": []
+  },
+  {
+    "policy_number": "HOME-404040",
+    "holder_name": "Grace Liu",
+    "status": "active",
+    "start_date": "2020-02-01",
+    "end_date": "2027-02-01",
+    "address": "31 Cedar Court, Brookfield",
+    "vehicle_plates": [],
+    "claims": [
+      { "date": "2023-12-05", "claim_type": "home_storm", "amount": 1200, "currency": "USD", "outcome": "paid" }
+    ]
+  },
+  {
+    "policy_number": "AUTO-219876",
+    "holder_name": "Peter Novak",
+    "status": "active",
+    "start_date": "2025-01-10",
+    "end_date": "2027-01-10",
+    "address": "403 Lake Drive, Fairview",
+    "vehicle_plates": ["GHJ-5512"],
+    "claims": []
+  }
+]

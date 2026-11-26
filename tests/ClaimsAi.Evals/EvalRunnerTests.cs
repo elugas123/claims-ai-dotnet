@@ -20,11 +20,13 @@ public class EvalRunnerTests
 
     private static readonly ExpectedCoverage Coverage = new(CoverageVerdict.Covered, ["AUTO-COMP-2026#1.3"]);
 
+    private static readonly ExpectedTriage Triage = new(TriageAction.RequestInformation, Fraud: false);
+
     private static readonly IReadOnlyList<EvalCase> Cases =
     [
-        new("A", new DateOnly(2026, 11, 7), "perfect", Label, Coverage),
-        new("B", new DateOnly(2026, 11, 7), "wrong date", Label, Coverage),
-        new("C", new DateOnly(2026, 11, 7), "throws", Label, Coverage),
+        new("A", new DateOnly(2026, 11, 7), "perfect", Label, Coverage, Triage),
+        new("B", new DateOnly(2026, 11, 7), "wrong date", Label, Coverage, Triage),
+        new("C", new DateOnly(2026, 11, 7), "throws", Label, Coverage, Triage),
     ];
 
     /// <summary>A: returns the label. B: gets the date wrong. C: throws.</summary>

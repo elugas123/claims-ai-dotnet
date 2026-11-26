@@ -9,7 +9,8 @@ public sealed record EvalCase(
     DateOnly ReceivedAt,
     string Text,
     ClaimExtraction Expected,
-    ExpectedCoverage ExpectedCoverage)
+    ExpectedCoverage ExpectedCoverage,
+    ExpectedTriage ExpectedTriage)
 {
     public ClaimSubmission ToSubmission() => new(Text, ReceivedAt);
 
@@ -20,6 +21,9 @@ public sealed record EvalCase(
 
 /// <summary>The right verdict and the clauses a correct answer must rely on.</summary>
 public sealed record ExpectedCoverage(CoverageVerdict Verdict, IReadOnlyList<string> Clauses);
+
+/// <summary>The right next action and whether the records hold fraud signals.</summary>
+public sealed record ExpectedTriage(TriageAction Action, bool Fraud);
 
 public sealed record FieldScore(string Field, bool Match, string? Expected, string? Actual);
 

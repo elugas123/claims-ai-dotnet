@@ -18,6 +18,7 @@ AI-powered insurance claims processing for a fictional insurer, built with .NET.
 - ASP.NET Core minimal API (.NET 10)
 - Claude via the official Anthropic C# SDK, with structured outputs
 - RAG over policy documents with in-memory BM25 keyword search
+- A tool-using triage agent whose loop runs inside the service (Messages API + tool use)
 - xUnit for unit tests and evals
 
 ## Architecture
@@ -39,14 +40,15 @@ Kept deliberately simple (KISS): no repositories, mediators or CQRS until a real
 ```
 src/
   ClaimsAi.Core            domain model, interfaces, ClaimAssessmentService (the pipeline), JSON contract
-  ClaimsAi.Infrastructure  Claude extractor + coverage checker, policy loader, BM25 retriever
+  ClaimsAi.Infrastructure  Claude extractor, coverage checker and triage agent; policy loader, BM25 retriever, fake CRM
   ClaimsAi.Api             HTTP endpoints
 tests/
   ClaimsAi.UnitTests       fast offline tests
-  ClaimsAi.Evals           extraction + RAG evals (offline retrieval eval, live evals against Claude)
+  ClaimsAi.Evals           extraction, RAG and agent evals (offline where possible, live against Claude)
 data/
   policies                 synthetic policy documents (Contoso Insurance)
-  claims                   labeled eval set: claim text + expected extraction + expected coverage
+  crm                      synthetic policyholders and claim history (what the agent looks up)
+  claims                   labeled eval set: text + expected extraction, coverage and triage
 evals/results              saved eval runs (JSON)
 ```
 
@@ -113,6 +115,31 @@ search handles it well, and it needs no extra service. With two short policies t
 prompt; retrieval is here so the design scales to hundreds of policies, and it sits behind `IPolicyRetriever` so
 embeddings can replace it if the retrieval eval shows misses.
 
+## Triage agent
+
+The last step is the only real agent: what to check next depends on what the previous lookup found, so Claude
+chooses the tools. Everything before it is a fixed pipeline in plain code.
+
+```
+            ┌──────────────── loop (max 10 turns) ────────────────┐
+claim +     │  Claude ──tool_use──► ClaimAgentTools ──result──►    │──► triage (structured output)
+coverage ──►│    ▲   get_policyholder · get_claim_history ·    │   │    action · fraud signals ·
+            │    └───────────────── search_policy ─────────────┘   │    missing info · customer reply
+            └──────────────────────────────────────────────────────┘
+```
+
+- **The loop runs in our service** (`ClaudeClaimAgent`), the common pattern in large companies: data stays behind
+  our own tools, every call is logged in `agent_tool_calls`, and there is a hard turn limit.
+- **Read-only tools.** The agent can look things up but can't change anything; acting on its recommendation stays
+  with a person or with code.
+- **Rules in the prompt, evidence from tools.** Fraud signals (incident within 30 days of the policy start, two or more
+  claims in 12 months, plate or address not matching the records) must quote what the tools returned.
+- **Actions** in priority order: `deny`, `refer_to_fraud_team`, `request_information`, `manual_review`, `fast_track`.
+- **The customer reply** is written in the customer's language and never mentions fraud checks.
+
+The fake CRM (`data/crm/policyholders.json`) holds the cases the agent has to catch: a car stolen 15 days after the
+policy started by someone with a prior theft, a third burglary in ten months, a fire after the policy lapsed.
+
 ## Evals
 
 Evals run as tests, the way Microsoft's [AI evaluation docs](https://learn.microsoft.com/en-us/dotnet/ai/evaluation/libraries)
@@ -151,11 +178,15 @@ The retrieval eval drove the design: top 6 missed deductible and exclusion claus
 terms from the extraction found the liability clause. The one remaining miss (C012, a mechanical failure) happens
 because the offline eval has no model summary; in the live pipeline the summary names the failure.
 
+The agent eval (`Agent_recommends_the_right_action_and_spots_fraud`, live) runs the agent on every labeled claim with
+real tool calls and scores the recommended action and fraud detection. It starts from the labeled extraction and
+coverage so errors from earlier steps don't leak into its score. Not run yet.
+
 ## Roadmap
 
 - [x] Extraction with structured outputs + labeled eval set
 - [x] Eval runner: per-field accuracy, cost, latency, saved history
 - [x] RAG over policies: clause chunking, BM25 retrieval, coverage decision with citations, retrieval eval
+- [x] Triage agent: tool loop in the service, fake CRM, fraud signals, customer reply, agent eval
 - [ ] First real eval runs and prompt iteration
-- [ ] Month 2 – agent + evals
-- [ ] Month 3 – public deploy + demo video
+- [ ] Public deploy + demo video

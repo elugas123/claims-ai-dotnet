@@ -4,15 +4,19 @@ namespace ClaimsAi.Core;
 public sealed record ClaimAssessment(
     ExtractionResult Extraction,
     IReadOnlyList<PolicyClause> RetrievedClauses,
-    CoverageResult Coverage);
+    CoverageResult Coverage,
+    TriageResult Triage);
 
 /// <summary>
-/// The claim pipeline: extract structured data, retrieve the relevant policy clauses (RAG), decide coverage.
+/// The claim pipeline: extract structured data, retrieve the relevant policy clauses (RAG), decide coverage,
+/// then let the triage agent investigate and recommend the next action.
+/// Fixed steps run as plain code; only the investigation, where the next step depends on what was found, is an agent.
 /// </summary>
 public sealed class ClaimAssessmentService(
     IClaimExtractor extractor,
     IPolicyRetriever retriever,
-    ICoverageChecker coverageChecker)
+    ICoverageChecker coverageChecker,
+    IClaimTriageAgent triageAgent)
 {
     /// <summary>Tuned with the retrieval eval: 6 missed deductible and exclusion clauses, 8 finds them.</summary>
     public const int ClausesToRetrieve = 8;
@@ -22,7 +26,8 @@ public sealed class ClaimAssessmentService(
         var extraction = await extractor.ExtractAsync(submission, cancellationToken);
         var clauses = RetrieveClauses(retriever, submission, extraction.Extraction);
         var coverage = await coverageChecker.CheckAsync(submission, extraction.Extraction, clauses, cancellationToken);
-        return new ClaimAssessment(extraction, clauses, coverage);
+        var triage = await triageAgent.TriageAsync(submission, extraction.Extraction, coverage.Decision, cancellationToken);
+        return new ClaimAssessment(extraction, clauses, coverage, triage);
     }
 
     public static IReadOnlyList<PolicyClause> RetrieveClauses(

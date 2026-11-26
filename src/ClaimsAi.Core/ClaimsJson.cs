@@ -70,6 +70,33 @@ public static class ClaimsJson
     }
     """);
 
+    /// <summary>Schema of <see cref="ClaimTriage"/>.</summary>
+    public static Dictionary<string, JsonElement> TriageSchema { get; } = Parse("""
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "recommended_action": {
+          "type": "string",
+          "enum": ["fast_track", "request_information", "manual_review", "refer_to_fraud_team", "deny"]
+        },
+        "fraud_signals": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": { "signal": { "type": "string" }, "evidence": { "type": "string" } },
+            "required": ["signal", "evidence"]
+          }
+        },
+        "missing_information": { "type": "array", "items": { "type": "string" } },
+        "customer_reply": { "type": "string" },
+        "internal_notes": { "type": "string" }
+      },
+      "required": ["recommended_action", "fraud_signals", "missing_information", "customer_reply", "internal_notes"]
+    }
+    """);
+
     private static Dictionary<string, JsonElement> Parse(string schema) =>
         JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(schema)!;
 }

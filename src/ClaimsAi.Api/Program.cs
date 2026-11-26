@@ -3,6 +3,7 @@ using System.Text.Json.Serialization;
 using Anthropic;
 using ClaimsAi.Core;
 using ClaimsAi.Infrastructure.Claude;
+using ClaimsAi.Infrastructure.Crm;
 using ClaimsAi.Infrastructure.Policies;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -27,6 +28,11 @@ builder.Services.AddSingleton<IPolicyRetriever>(_ =>
     var directory = Path.Combine(builder.Environment.ContentRootPath, builder.Configuration["Policies:Directory"]!);
     return new Bm25PolicyRetriever(MarkdownPolicyLoader.LoadDirectory(directory));
 });
+builder.Services.AddSingleton<IPolicyholderDirectory>(_ =>
+    JsonPolicyholderDirectory.LoadFile(Path.Combine(builder.Environment.ContentRootPath, builder.Configuration["Crm:File"]!)));
+builder.Services.AddSingleton<ClaimAgentTools>();
+builder.Services.AddSingleton<IClaimTriageAgent>(sp => new ClaudeClaimAgent(
+    sp.GetRequiredService<AnthropicClient>(), sp.GetRequiredService<ClaimAgentTools>()));
 builder.Services.AddSingleton<ClaimAssessmentService>();
 
 var app = builder.Build();
@@ -46,7 +52,7 @@ app.MapPost("/claims/extract", (ClaimRequest request, IClaimExtractor extractor,
         };
     }));
 
-// Full pipeline: extraction, retrieval of policy clauses, coverage decision with citations.
+// Full pipeline: extraction, retrieval of policy clauses, coverage decision with citations, triage agent.
 app.MapPost("/claims/assess", (ClaimRequest request, ClaimAssessmentService assessor, CancellationToken ct) =>
     Handle(request, async submission =>
     {
@@ -55,13 +61,15 @@ app.MapPost("/claims/assess", (ClaimRequest request, ClaimAssessmentService asse
         {
             result.Extraction.Extraction,
             Coverage = result.Coverage.Decision,
+            result.Triage.Triage,
+            AgentToolCalls = result.Triage.ToolCalls,
             RetrievedClauses = result.RetrievedClauses.Select(c => new { c.Id, c.Section, c.Text }),
             Usage = new
             {
-                InputTokens = result.Extraction.InputTokens + result.Coverage.InputTokens,
-                OutputTokens = result.Extraction.OutputTokens + result.Coverage.OutputTokens,
+                InputTokens = result.Extraction.InputTokens + result.Coverage.InputTokens + result.Triage.InputTokens,
+                OutputTokens = result.Extraction.OutputTokens + result.Coverage.OutputTokens + result.Triage.OutputTokens,
             },
-            LatencyMs = (int)(result.Extraction.Latency + result.Coverage.Latency).TotalMilliseconds,
+            LatencyMs = (int)(result.Extraction.Latency + result.Coverage.Latency + result.Triage.Latency).TotalMilliseconds,
         };
     }));
 
